@@ -245,3 +245,8 @@ footer p { max-width: 52em; margin: 0 auto 8px; }
 .los-cards { margin-top: 22px; }
 #los .game { border-left-color: var(--violet); }
 #los .year { color: #b9a3e3; border-color: rgba(142, 111, 196, .5); background: rgba(142, 111, 196, .1); }
+
+/* ---------- anime ---------- */
+#anime .game { border-left-color: var(--teal); }
+#anime .year { color: #8fcfc7; border-color: rgba(95, 168, 160, .5); background: rgba(95, 168, 160, .1); }
+tr.grp th { text-align: left; background: var(--panel-2); color: var(--gold); font-size: .8rem; letter-spacing: .04em; white-space: normal; }
