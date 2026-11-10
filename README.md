@@ -21,12 +21,15 @@
 | `data/tracks.json` | 作品ごとのプレイリスト ID と曲（曲名・動画 ID・時間） |
 | `tools/build.py` | 作品の説明・年表・相関図の定義と、`index.html` の生成 |
 | `assets/style.css` | デザイン |
+| `assets/favicon.svg` ほか | favicon と、SNS 共有用の画像 `og-image.png`（`tools/og-image.html` を 1200×630 で撮影したもの） |
 
 編集後に次を実行すると `index.html` が再生成されます（Python 3 のみ、追加ライブラリ不要）。
 
 ```bash
 python3 tools/build.py
 ```
+
+公開先の URL を変える場合は、`tools/build.py` 冒頭の `SITE_URL` も変更してください（SNS 共有用の画像は絶対 URL で指定しているため）。
 
 ## 注意
 

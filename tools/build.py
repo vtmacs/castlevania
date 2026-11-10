@@ -11,6 +11,12 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parent.parent
 TRACKS = json.loads((ROOT / "data" / "tracks.json").read_text(encoding="utf-8"))
 
+# 公開先の URL。OGP 画像などは絶対 URL が必要なので、公開先を変えたらここも変える。
+SITE_URL = "https://vtmacs.github.io/castlevania/"
+SITE_TITLE = "悪魔城ドラキュラ 音楽館 | Castlevania Music Archive"
+SITE_DESC = ("悪魔城ドラキュラ（Castlevania）シリーズの楽曲を、物語の時系列順に作品ごとにまとめたファンサイト。"
+             "YouTube Music のプレイリスト、あらすじ、主人公の相関図つき。")
+
 WIKI = "https://ja.wikipedia.org/wiki/"
 YTM_PL = "https://music.youtube.com/playlist?list="
 YTM_W = "https://music.youtube.com/watch?v="
@@ -433,8 +439,27 @@ def page():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>悪魔城ドラキュラ 音楽館 | Castlevania Music Archive</title>
-<meta name="description" content="悪魔城ドラキュラ（Castlevania）シリーズの楽曲を、物語の時系列順に作品ごとにまとめたファンサイト。YouTube Music のプレイリスト、あらすじ、主人公の相関図つき。">
+<title>{SITE_TITLE}</title>
+<meta name="description" content="{SITE_DESC}">
+<link rel="canonical" href="{SITE_URL}">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#0c090d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="悪魔城ドラキュラ 音楽館">
+<meta property="og:title" content="{SITE_TITLE}">
+<meta property="og:description" content="{SITE_DESC}">
+<meta property="og:url" content="{SITE_URL}">
+<meta property="og:image" content="{SITE_URL}assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="悪魔城ドラキュラ 音楽館 — Castlevania Music Archive">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{SITE_TITLE}">
+<meta name="twitter:description" content="{SITE_DESC}">
+<meta name="twitter:image" content="{SITE_URL}assets/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&amp;family=Shippori+Mincho:wght@500;700&amp;display=swap" rel="stylesheet">
@@ -447,9 +472,9 @@ def page():
   <p class="lead">千年にわたるベルモンド一族とドラキュラの戦いを、音楽でたどる。<br>
   {len(GAMES) + len(LOS) + len(ANIME)}作品・{total}曲を物語の時系列順にまとめました。</p>
   <nav>
-    <a href="#favorites">血の涙 / Vampire Killer</a>
     <a href="#timeline">年表</a>
     <a href="#relations">相関図</a>
+    <a href="#favorites">血の涙 / Vampire Killer</a>
     <a href="#games">作品別の楽曲</a>
     <a href="#los">Lords of Shadow</a>
     <a href="#anime">アニメ版</a>
@@ -458,12 +483,6 @@ def page():
 </header>
 
 <main>
-<section id="favorites">
-  <h2>二大名曲コレクション</h2>
-  <p class="sec-lead">シリーズを象徴する「血の涙（Bloody Tears）」と「Vampire Killer」。作品ごとに姿を変える歴代バージョンだけを集めました。</p>
-  {fav_cards}
-</section>
-
 <section id="timeline">
   <h2>年表</h2>
   <p class="sec-lead">作品名をクリックすると、あらすじと曲一覧へ移動します。</p>
@@ -479,6 +498,12 @@ def page():
   <p class="sec-lead">聖鞭ヴァンパイアキラーの継承を軸に、各作品の主人公と関係者を並べています。<span class="legend">
     <span><i class="k bel"></i>ベルモンド一族</span> <span><i class="k mor"></i>モリス家</span> <span><i class="k hero"></i>その他の主人公</span> <span><i class="k dark"></i>ドラキュラの血統</span> <span><i class="k ally"></i>仲間</span></span></p>
   <div class="dg">{diagram()}</div>
+</section>
+
+<section id="favorites">
+  <h2>二大名曲コレクション</h2>
+  <p class="sec-lead">シリーズを象徴する「血の涙（Bloody Tears）」と「Vampire Killer」。作品ごとに姿を変える歴代バージョンだけを集めました。</p>
+  {fav_cards}
 </section>
 
 <section id="games">
