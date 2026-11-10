@@ -41,13 +41,15 @@ GAMES = [
          story="ラルフがドラキュラを倒してから3年。伯爵が遺した呪いは今も大地を蝕んでいた。"
                "かつてドラキュラに仕えた悪魔精錬士ヘクターは、人として静かに暮らしていたが、愛するロザリーを魔女として処刑に追い込んだかつての同僚アイザックへの復讐のため、"
                "捨てたはずの悪魔精錬の力を再び手にする。旅の途中では伝説のハンター、ラルフとも刃を交える。"),
-    dict(id="bc", year="1499年", title="Castlevania: Belmont's Curse", en="ベルモンド・カース",
+    dict(id="bc", year="1499年", title="Castlevania: Belmont's Curse", en="キャッスルヴァニア ベルモンドカース",
          platform="Nintendo Switch / PlayStation 5 / Xbox Series X|S / PC / 2026年", hero="ローズ・ベルモンド",
          wiki_url="https://en.wikipedia.org/wiki/Castlevania:_Belmont%27s_Curse", wiki_label="Wikipedia（英語版）",
-         story="『悪魔城伝説』から23年後のパリ。魔物に襲われた街の司教が、かつてドラキュラを倒したラルフ（英語名トレバー）に助けを求める。"
-               "ラルフが伴ったのは、亡き妻サイファとの間に生まれ、ハンターとして鍛え上げた娘ローズ。彼女は母から受け継いだドラキュラの呪いを右腕に宿していた。"
-               "街を探索するうち、魔物の出現は伯爵を蘇らせる儀式の一部だと分かり、やがてパリの中心に悪魔城が姿を現す。"
-               "シリーズ40周年を飾る探索型2Dアクションで、音楽は ASADI が手がけた。"),
+         links=[("公式サイト", "https://www.konami.com/games/castlevania/belmonts_curse/jp/ja/")],
+         story="『悪魔城伝説』から23年後の1499年。フランスの首都パリは、突如現れた魔物の群れに襲われていた。"
+               "聖鞭ヴァンパイアキラーを持つドラキュラ殺しの英雄トレバー・ベルモンド（『悪魔城伝説』のラルフ）、その娘ローズは、"
+               "災厄の元凶を突き止めるため街の探索と魔物の討伐を始め、やがてその裏にある闇の陰謀に巻き込まれていく。"
+               "倒したボスを不思議なタロットカードに封じ、「アルカナ」として力を借りるのが特徴。デス、メデューサ、カーミラに加え、ジャンヌ・ダルクも立ちはだかる。"
+               "KONAMI・Evil Empire・Motion Twin による探索型2Dアクションで、音楽は ASADI。"),
     dict(id="adv", year="1576年", title="ドラキュラ伝説", en="Castlevania: The Adventure",
          platform="ゲームボーイ / 1989年", hero="クリストファー・ベルモンド", wiki="ドラキュラ伝説",
          story="ラルフの戦いから100年。再び蘇ったドラキュラを討つため、ベルモンド家のクリストファーが悪魔城に挑む。"
@@ -228,9 +230,9 @@ def diagram():
     node("L", 0, "マティアス → ドラキュラ", "神を呪い吸血鬼となった魔王", "dark")
     node("C", 0, "レオン・ベルモンド", "一族の祖／キャッスルヴァニア", "bel")
     node("L", 1, "アルカード", "ドラキュラの息子／悪魔城伝説", "dark")
-    node("C", 1, "ラルフ・C・ベルモンド", "悪魔城伝説", "bel")
+    node("C", 1, "ラルフ・C・ベルモンド", "悪魔城伝説／別名トレバー", "bel")
     node("R", 1, "サイファ・ヴェルナンデス", "魔法使い。グラントも仲間に", "ally")
-    node("C", 2, "ローズ・ベルモンド", "ラルフとサイファの娘／Belmont's Curse", "bel")
+    node("C", 2, "ローズ・ベルモンド", "トレバー（ラルフ）の娘／Belmont's Curse", "bel")
     node("R", 2, "ヘクター", "元ドラキュラ配下／闇の呪印", "hero")
     node("C", 3, "クリストファー・ベルモンド", "ドラキュラ伝説 I・II", "bel")
     node("R", 3, "ソレイユ・ベルモンド", "操られた息子", "ally")
@@ -317,6 +319,8 @@ def game_card(g):
         f'<a class="btn ghost" href="{YTM_PL}{TRACKS[k]["playlistId"]}" target="_blank" rel="noopener">▶ {e(label)}</a>'
         for k, label, _ in g.get("extra", []))
     note = f'<p class="note">※ {e(g["note"])}</p>' if g.get("note") else ""
+    more = "".join(f'<a class="btn ghost" href="{e(url)}" target="_blank" rel="noopener">{e(label)}</a>'
+                   for label, url in g.get("links", []))
     return f'''
 <article class="game" id="{g["id"]}">
   <header>
@@ -335,6 +339,7 @@ def game_card(g):
     <a class="btn" href="{YTM_PL}{d["playlistId"]}" target="_blank" rel="noopener">▶ プレイリストを YouTube Music で開く</a>
     {extra}
     <a class="btn ghost" href="{wiki_url(g)}" target="_blank" rel="noopener">{e(g.get("wiki_label", "Wikipedia"))}</a>
+    {more}
   </div>
   <details>
     <summary><span>曲一覧（{len(d["tracks"])}曲）</span> {badge}</summary>
