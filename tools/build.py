@@ -142,6 +142,26 @@ LOS = [
                "現代の街と記憶の中の城を行き来しながら力を取り戻すドラキュラ。その裏では、息子アルカードと交わした遠大な計画が動いていた。"),
 ]
 
+# Netflix のアニメシリーズ
+ANIME = [
+    dict(id="anime1", year="15世紀", title="悪魔城ドラキュラ -キャッスルヴァニア-", en="Castlevania (Netflix)",
+         platform="Netflix / 2017〜2021年（全4シーズン・32話）", when="配信",
+         hero="トレバー・ベルモンド / サイファ・ベルナデス / アルカード", wiki="悪魔城ドラキュラ -キャッスルヴァニア-",
+         story="『悪魔城伝説』を原案にしたアニメシリーズ。医術を学ぶ人間の女性リサを愛したドラキュラは、彼女が魔女として火刑に処されたことで人類への復讐を誓い、"
+               "ワラキアに魔物の軍勢を解き放つ。教会に追放され落ちぶれていたベルモンド家最後の生き残りトレバーは、魔法を操る「語り部」のサイファ、"
+               "そして父を止めようとするドラキュラの息子アルカードと手を組む。"
+               "後半のシーズンでは『闇の呪印』のヘクターやアイザック、カーミラたちの物語も描かれる。音楽はトレバー・モリス。",
+         note="プレイリストはシーズン1のサウンドトラックです。"),
+    dict(id="noc", year="1792年", title="悪魔城ドラキュラ -キャッスルヴァニア-: 月夜のノクターン", en="Castlevania: Nocturne",
+         platform="Netflix / 2023〜2025年（全2シーズン・16話）", when="配信",
+         hero="リヒター・ベルモンド / マリア・ラーネッド / アネット", wiki="悪魔城ドラキュラ -キャッスルヴァニア-: 月夜のノクターン",
+         story="前シリーズから約300年後、フランス革命のさなかを舞台にした続編。『血の輪廻』と『月下の夜想曲』を原案とする。"
+               "幼い頃に目の前で母を吸血鬼に殺されたリヒター・ベルモンドは、革命を志すマリア、カリブから海を渡ってきたアネットたちと共に、"
+               "貴族と結んだ吸血鬼たち、そして太陽を呑み込むという「吸血鬼の救世主」エルジェーベト・バートリに立ち向かう。"
+               "主題曲には『血の輪廻』の「乾坤の血族（Divine Bloodlines）」が使われている。音楽はトレバー・モリスとトレイ・トイ。",
+         note="プレイリストはシーズン1のアルバムです。シーズン2はアルバム単位のプレイリストが見つからなかったため、曲ごとのリンクのみ掲載しています。"),
+]
+
 # 時系列の外にあるクロスオーバー作品（プレイリストのみ紹介）
 BONUS = [
     ("悪魔城ドラキュラ Harmony of Despair ORIGINAL SOUNDTRACK SELECTION", "歴代主人公が集う協力アクションのサントラ", "PLGB_aEXQbubuEC8lIpV0T9S2GHPaN_bAg"),
@@ -301,11 +321,14 @@ def los_diagram():
 def track_table(key):
     d = TRACKS[key]
     pid = d["playlistId"]
-    rows = "".join(
-        f'<tr><td class="num">{i}</td>'
-        f'<td><a href="{YTM_W}{t["videoId"]}&amp;list={pid}" target="_blank" rel="noopener">{e(t["title"])}</a></td>'
-        f'<td class="dur">{e(t["duration"])}</td></tr>'
-        for i, t in enumerate(d["tracks"], 1))
+    rows = ""
+    for i, t in enumerate(d["tracks"], 1):
+        if t.get("group"):
+            rows += f'<tr class="grp"><th colspan="3" scope="colgroup">{e(t["group"])}</th></tr>'
+        href = YTM_W + t["videoId"] + ("" if t.get("noList") else "&amp;list=" + pid)
+        rows += (f'<tr><td class="num">{i}</td>'
+                 f'<td><a href="{href}" target="_blank" rel="noopener">{e(t["title"])}</a></td>'
+                 f'<td class="dur">{e(t["duration"])}</td></tr>')
     return (f'<div class="tw"><table><thead><tr><th class="num">#</th><th>曲名（クリックで YouTube Music を開く）</th>'
             f'<th class="dur">時間</th></tr></thead><tbody>{rows}</tbody></table></div>')
 
@@ -332,7 +355,7 @@ def game_card(g):
   </header>
   <dl>
     <dt>主人公</dt><dd>{e(g["hero"])}</dd>
-    <dt>発売</dt><dd>{e(g["platform"])}</dd>
+    <dt>{e(g.get("when", "発売"))}</dt><dd>{e(g["platform"])}</dd>
   </dl>
   <p class="story">{e(g["story"])}</p>
   <div class="links">
@@ -350,7 +373,7 @@ def game_card(g):
 
 
 def page():
-    total = sum(len(TRACKS[g["id"]]["tracks"]) for g in GAMES + LOS)
+    total = sum(len(TRACKS[g["id"]]["tracks"]) for g in GAMES + LOS + ANIME)
     tl = "".join(
         f'<tr><td class="y">{e(g["year"])}</td>'
         f'<td><a href="#{g["id"]}">{e(g["title"])}</a>{" <span class=\"badge side\">外伝</span>" if g.get("side") else ""}</td>'
@@ -365,6 +388,7 @@ def page():
         for t, desc, pid in BONUS)
     cards = "".join(game_card(g) for g in GAMES)
     los_cards = "".join(game_card(g) for g in LOS)
+    anime_cards = "".join(game_card(g) for g in ANIME)
     return f'''<!doctype html>
 <html lang="ja">
 <head>
@@ -382,12 +406,13 @@ def page():
   <p class="kicker">Castlevania Music Archive</p>
   <h1><span>悪魔城ドラキュラ</span> <span>音楽館</span></h1>
   <p class="lead">千年にわたるベルモンド一族とドラキュラの戦いを、音楽でたどる。<br>
-  {len(GAMES) + len(LOS)}作品・{total}曲を物語の時系列順にまとめました。</p>
+  {len(GAMES) + len(LOS) + len(ANIME)}作品・{total}曲を物語の時系列順にまとめました。</p>
   <nav>
     <a href="#timeline">年表</a>
     <a href="#relations">相関図</a>
     <a href="#games">作品別の楽曲</a>
     <a href="#los">Lords of Shadow</a>
+    <a href="#anime">アニメ版</a>
     <a href="#bonus">番外編</a>
   </nav>
 </header>
@@ -424,6 +449,12 @@ def page():
   <div class="los-cards">{los_cards}</div>
 </section>
 
+<section id="anime">
+  <h2>アニメ版（Netflix）</h2>
+  <p class="sec-lead">ゲームを原案にした Netflix のアニメシリーズ。登場人物や出来事はゲームの年表を下敷きにしつつ、独自の解釈で描かれています。</p>
+  {anime_cards}
+</section>
+
 <section id="bonus">
   <h2>番外編</h2>
   <p class="sec-lead">時系列の外にあるクロスオーバー作品やリメイクのサウンドトラック。</p>
@@ -444,10 +475,11 @@ def page():
     var s = q.value.trim().toLowerCase(), hits = 0;
     games.forEach(function (g) {{
       var n = 0;
-      [].forEach.call(g.querySelectorAll('tbody tr'), function (tr) {{
+      [].forEach.call(g.querySelectorAll('tbody tr:not(.grp)'), function (tr) {{
         var ok = !s || tr.textContent.toLowerCase().indexOf(s) !== -1;
         tr.hidden = !ok; if (ok) n++;
       }});
+      [].forEach.call(g.querySelectorAll('tr.grp'), function (tr) {{ tr.hidden = !!s; }});
       g.hidden = !!s && n === 0;
       g.querySelector('details').open = !!s && n > 0;
       if (s) hits += n;
