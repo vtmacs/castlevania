@@ -20,6 +20,10 @@ def wiki(title):
     return WIKI + quote(title.replace(" ", "_"))
 
 
+def wiki_url(g):
+    return g.get("wiki_url") or wiki(g["wiki"])
+
+
 # 物語の時系列順。side=True は公式年表で外伝扱いの作品。
 GAMES = [
     dict(id="loi", year="1094年", title="キャッスルヴァニア", en="Castlevania: Lament of Innocence",
@@ -37,6 +41,13 @@ GAMES = [
          story="ラルフがドラキュラを倒してから3年。伯爵が遺した呪いは今も大地を蝕んでいた。"
                "かつてドラキュラに仕えた悪魔精錬士ヘクターは、人として静かに暮らしていたが、愛するロザリーを魔女として処刑に追い込んだかつての同僚アイザックへの復讐のため、"
                "捨てたはずの悪魔精錬の力を再び手にする。旅の途中では伝説のハンター、ラルフとも刃を交える。"),
+    dict(id="bc", year="1499年", title="Castlevania: Belmont's Curse", en="ベルモンド・カース",
+         platform="Nintendo Switch / PlayStation 5 / Xbox Series X|S / PC / 2026年", hero="ローズ・ベルモンド",
+         wiki_url="https://en.wikipedia.org/wiki/Castlevania:_Belmont%27s_Curse", wiki_label="Wikipedia（英語版）",
+         story="『悪魔城伝説』から23年後のパリ。魔物に襲われた街の司教が、かつてドラキュラを倒したラルフ（英語名トレバー）に助けを求める。"
+               "ラルフが伴ったのは、亡き妻サイファとの間に生まれ、ハンターとして鍛え上げた娘ローズ。彼女は母から受け継いだドラキュラの呪いを右腕に宿していた。"
+               "街を探索するうち、魔物の出現は伯爵を蘇らせる儀式の一部だと分かり、やがてパリの中心に悪魔城が姿を現す。"
+               "シリーズ40周年を飾る探索型2Dアクションで、音楽は ASADI が手がけた。"),
     dict(id="adv", year="1576年", title="ドラキュラ伝説", en="Castlevania: The Adventure",
          platform="ゲームボーイ / 1989年", hero="クリストファー・ベルモンド", wiki="ドラキュラ伝説",
          story="ラルフの戦いから100年。再び蘇ったドラキュラを討つため、ベルモンド家のクリストファーが悪魔城に挑む。"
@@ -110,6 +121,25 @@ GAMES = [
                "魔王候補たちとの戦いに巻き込まれた蒼真は、ユリウス、ヨーコ、有角らと共に教団の城へ乗り込み、自らの内に眠る闇と再び向き合う。"),
 ]
 
+# 正史とは別の世界を描くリブート三部作（物語順）
+LOS = [
+    dict(id="los1", year="1047年", title="キャッスルヴァニア ロード オブ シャドウ", en="Castlevania: Lords of Shadow",
+         platform="PlayStation 3 / Xbox 360 / 2010年", hero="ガブリエル・ベルモンド", wiki="キャッスルヴァニア ロード オブ シャドウ",
+         story="天と地のつながりが断たれ、魔物がはびこる11世紀のヨーロッパ。「光の兄弟団」の騎士ガブリエルは、何者かに殺された妻マリーを蘇らせる望みを胸に、"
+               "世界を覆う闇の源である三人の「影の王（ロード オブ シャドウ）」を倒す旅に出る。"
+               "死者をも蘇らせるという「神の仮面」を追う戦いの果てに、彼は残酷な真実を知る。後日談で彼は吸血鬼となり、自らをドラキュラと名乗る。"),
+    dict(id="mof", year="11〜12世紀", title="キャッスルヴァニア ロード オブ シャドウ 宿命の魔鏡", en="Castlevania: Lords of Shadow – Mirror of Fate",
+         platform="ニンテンドー3DS / 2013年", hero="シモン・ベルモンド / アルカード / トレバー・ベルモンド", wiki="キャッスルヴァニア ロード オブ シャドウ 宿命の魔鏡",
+         story="前作と『2』の間をつなぐ、ベルモンド三代の物語。ガブリエルの息子トレバーは、魔王ドラキュラとなった父を討つため城へ向かうが敗れ、やがてアルカードとして蘇る。"
+               "数十年後、両親を奪われ復讐を誓うトレバーの息子シモンが城に乗り込み、正体を明かさぬアルカードと共にドラキュラへ挑む。"
+               "三人の章を時間をさかのぼる順に遊ぶことで、一族の宿命の全体像が明らかになる。"),
+    dict(id="los2", year="現代", title="悪魔城ドラキュラ ロード オブ シャドウ2", en="Castlevania: Lords of Shadow 2",
+         platform="PlayStation 3 / Xbox 360 / 2014年", hero="ドラキュラ（ガブリエル・ベルモンド）", wiki="悪魔城ドラキュラ ロード オブ シャドウ2",
+         story="長い眠りから目覚めたドラキュラは、力を失い衰えた姿で現代の大都市にいた。"
+               "かつての宿敵ゾベックは、復活が迫るサタンを阻止すれば、望み続けた「不死からの解放」を与えると持ちかける。"
+               "現代の街と記憶の中の城を行き来しながら力を取り戻すドラキュラ。その裏では、息子アルカードと交わした遠大な計画が動いていた。"),
+]
+
 # 時系列の外にあるクロスオーバー作品（プレイリストのみ紹介）
 BONUS = [
     ("悪魔城ドラキュラ Harmony of Despair ORIGINAL SOUNDTRACK SELECTION", "歴代主人公が集う協力アクションのサントラ", "PLGB_aEXQbubuEC8lIpV0T9S2GHPaN_bAg"),
@@ -155,7 +185,7 @@ def diagram():
         out.append(f'<line class="{cls}" x1="{x1}" y1="{y(r1)}" x2="{x2}" y2="{y(r2)}"/>')
         label((x1 + x2) / 2, (y(r1) + y(r2)) / 2, text)
 
-    rows = ["1094年", "1476年", "1479年", "1576–91年", "1691–98年", "1748年", "1792年", "1797年",
+    rows = ["1094年", "1476年", "1479–99年", "1576–91年", "1691–98年", "1748年", "1792年", "1797年",
             "19世紀", "1917年", "1944年", "1999年", "2035–36年"]
     H = y(len(rows) - 1) + 150
     for i, t in enumerate(rows):
@@ -167,7 +197,8 @@ def diagram():
 
     # 線を先に描いてからノードを重ねる
     vert("C", 0, 1, "子孫")
-    vert("C", 1, 3, "子孫")
+    vert("C", 1, 2, "父娘")
+    vert("C", 2, 3, "子孫")
     vert("C", 3, 4, "子孫")
     vert("C", 4, 5, "孫")
     vert("C", 5, 6, "子孫")
@@ -182,9 +213,9 @@ def diagram():
     horiz("L", "C", 0, "親友 → 宿敵", "e foe")
     horiz("L", "C", 1, "共闘")
     horiz("C", "R", 1, "共闘 → 結婚")
-    hx = X["C"] + 80  # ラルフの下辺からヘクターへ折れ線
-    out.append(f'<path class="e" fill="none" d="M{hx} {y(1)+NH/2} V{y(2)} H{X["R"]-NW/2}"/>')
-    label((hx + X["R"] - NW / 2) / 2 + 10, y(2), "対決 → 共闘")
+    hx, hy, hx2 = X["C"] + 105, y(1) + NH / 2 + 14, X["R"] - NW / 2 - 28  # ラルフからヘクターへの折れ線
+    out.append(f'<path class="e" fill="none" d="M{hx} {y(1)+NH/2} V{hy} H{hx2} V{y(2)} H{X["R"]-NW/2}"/>')
+    label((hx + hx2) / 2 + 10, hy, "対決 → 共闘")
     horiz("C", "R", 3, "父子")
     horiz("C", "R", 5, "親友")
     horiz("C", "R", 6, "遠縁の義妹")
@@ -199,6 +230,7 @@ def diagram():
     node("L", 1, "アルカード", "ドラキュラの息子／悪魔城伝説", "dark")
     node("C", 1, "ラルフ・C・ベルモンド", "悪魔城伝説", "bel")
     node("R", 1, "サイファ・ヴェルナンデス", "魔法使い。グラントも仲間に", "ally")
+    node("C", 2, "ローズ・ベルモンド", "ラルフとサイファの娘／Belmont's Curse", "bel")
     node("R", 2, "ヘクター", "元ドラキュラ配下／闇の呪印", "hero")
     node("C", 3, "クリストファー・ベルモンド", "ドラキュラ伝説 I・II", "bel")
     node("R", 3, "ソレイユ・ベルモンド", "操られた息子", "ally")
@@ -226,6 +258,41 @@ def diagram():
                f'1844年 コーネル・1852年 ラインハルト・シュナイダー、キャリー・ヴェルナンデス（黙示録）</text></g>')
     return (f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="dg-t" xmlns="http://www.w3.org/2000/svg">'
             f'<title id="dg-t">悪魔城ドラキュラシリーズ 主人公の相関図</title>' + "".join(out) + "</svg>")
+
+
+def los_diagram():
+    W, H, NW, NH = 1060, 330, 250, 54
+    out = []
+
+    def node(cx, cy, name, sub, cls):
+        out.append(f'<g class="n {cls}"><rect x="{cx-NW/2}" y="{cy-NH/2}" width="{NW}" height="{NH}" rx="8"/>'
+                   f'<text class="nm" x="{cx}" y="{cy-4}">{e(name)}</text>'
+                   f'<text class="sb" x="{cx}" y="{cy+15}">{e(sub)}</text></g>')
+
+    def edge(x1, y1, x2, y2, text, cls="e"):
+        out.append(f'<line class="{cls}" x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}"/>')
+        w = len(text) * 12.5 + 14
+        mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+        out.append(f'<g class="lb"><rect x="{mx-w/2}" y="{my-10}" width="{w}" height="20" rx="10"/>'
+                   f'<text x="{mx}" y="{my+4}">{e(text)}</text></g>')
+
+    L, C, R = 175, 530, 885
+    edge(L + NW / 2, 60, C - NW / 2, 60, "宿敵 → 取引", "e foe")
+    edge(C + NW / 2, 60, R - NW / 2, 60, "夫婦")
+    edge(C, 60 + NH / 2, C, 165 - NH / 2, "父子")
+    edge(C + NW / 2, 165, R - NW / 2, 165, "夫婦")
+    edge(C, 165 + NH / 2, C, 270 - NH / 2, "父子")
+    edge(L + NW / 2, 165, C - NW / 2, 165, "同一人物", "e dash")
+    edge(L + NW / 2, 165 + 20, C - NW / 2, 270, "正体を隠して共闘")
+    node(L, 60, "ゾベック", "影の王の一人。すべての黒幕", "dark")
+    node(C, 60, "ガブリエル・ベルモンド", "のちのドラキュラ／LoS・LoS2", "hero")
+    node(R, 60, "マリー・ベルモンド", "殺された妻。夫を導く", "ally")
+    node(L, 165, "アルカード", "蘇ったトレバー／宿命の魔鏡・LoS2", "dark")
+    node(C, 165, "トレバー・ベルモンド", "父を知らずに育つ／宿命の魔鏡", "bel")
+    node(R, 165, "サイファ・ベルモンド", "トレバーの妻", "ally")
+    node(C, 270, "シモン・ベルモンド", "両親の仇を追う／宿命の魔鏡", "bel")
+    return (f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="ldg-t" xmlns="http://www.w3.org/2000/svg">'
+            f'<title id="ldg-t">Lords of Shadow シリーズの相関図</title>' + "".join(out) + "</svg>")
 
 
 # ---------------------------------------------------------------- HTML
@@ -267,7 +334,7 @@ def game_card(g):
   <div class="links">
     <a class="btn" href="{YTM_PL}{d["playlistId"]}" target="_blank" rel="noopener">▶ プレイリストを YouTube Music で開く</a>
     {extra}
-    <a class="btn ghost" href="{wiki(g["wiki"])}" target="_blank" rel="noopener">Wikipedia</a>
+    <a class="btn ghost" href="{wiki_url(g)}" target="_blank" rel="noopener">{e(g.get("wiki_label", "Wikipedia"))}</a>
   </div>
   <details>
     <summary><span>曲一覧（{len(d["tracks"])}曲）</span> {badge}</summary>
@@ -278,13 +345,13 @@ def game_card(g):
 
 
 def page():
-    total = sum(len(TRACKS[g["id"]]["tracks"]) for g in GAMES)
+    total = sum(len(TRACKS[g["id"]]["tracks"]) for g in GAMES + LOS)
     tl = "".join(
         f'<tr><td class="y">{e(g["year"])}</td>'
         f'<td><a href="#{g["id"]}">{e(g["title"])}</a>{" <span class=\"badge side\">外伝</span>" if g.get("side") else ""}</td>'
         f'<td>{e(g["hero"])}</td>'
         f'<td class="c">{len(TRACKS[g["id"]]["tracks"])}</td>'
-        f'<td><a href="{wiki(g["wiki"])}" target="_blank" rel="noopener">Wikipedia</a></td></tr>'
+        f'<td><a href="{wiki_url(g)}" target="_blank" rel="noopener">{e(g.get("wiki_label", "Wikipedia"))}</a></td></tr>'
         + ('<tr class="ev"><td class="y">1999年</td><td colspan="4">ユリウス・ベルモンドらがドラキュラを完全に滅ぼす（ゲーム化されていない出来事）</td></tr>'
            if g["id"] == "por" else "")
         for g in GAMES)
@@ -292,6 +359,7 @@ def page():
         f'<li><a href="{YTM_PL}{pid}" target="_blank" rel="noopener">{e(t)}</a><span>{e(desc)}</span></li>'
         for t, desc, pid in BONUS)
     cards = "".join(game_card(g) for g in GAMES)
+    los_cards = "".join(game_card(g) for g in LOS)
     return f'''<!doctype html>
 <html lang="ja">
 <head>
@@ -309,11 +377,12 @@ def page():
   <p class="kicker">Castlevania Music Archive</p>
   <h1><span>悪魔城ドラキュラ</span> <span>音楽館</span></h1>
   <p class="lead">千年にわたるベルモンド一族とドラキュラの戦いを、音楽でたどる。<br>
-  {len(GAMES)}作品・{total}曲を物語の時系列順にまとめました。</p>
+  {len(GAMES) + len(LOS)}作品・{total}曲を物語の時系列順にまとめました。</p>
   <nav>
     <a href="#timeline">年表</a>
     <a href="#relations">相関図</a>
     <a href="#games">作品別の楽曲</a>
+    <a href="#los">Lords of Shadow</a>
     <a href="#bonus">番外編</a>
   </nav>
 </header>
@@ -341,6 +410,13 @@ def page():
   <p class="sec-lead">「曲一覧」を開くと各曲へのリンクが表示されます。</p>
   <div class="filter"><input id="q" type="search" placeholder="曲名で検索（例: Vampire Killer、血の涙、幻想的舞曲）" aria-label="曲名で検索"><span id="qn"></span></div>
   {cards}
+</section>
+
+<section id="los">
+  <h2>Lords of Shadow シリーズ</h2>
+  <p class="sec-lead">2010年に始まったリブート三部作。上の年表とはつながらない別の世界の物語で、ベルモンドの祖ガブリエル自身がドラキュラになる過程を描きます。音楽はオスカル・アラウホによるフルオーケストラ。</p>
+  <div class="dg">{los_diagram()}</div>
+  <div class="los-cards">{los_cards}</div>
 </section>
 
 <section id="bonus">
