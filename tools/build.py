@@ -20,6 +20,10 @@ def wiki(title):
     return WIKI + quote(title.replace(" ", "_"))
 
 
+def wiki_url(g):
+    return g.get("wiki_url") or wiki(g["wiki"])
+
+
 # 物語の時系列順。side=True は公式年表で外伝扱いの作品。
 GAMES = [
     dict(id="loi", year="1094年", title="キャッスルヴァニア", en="Castlevania: Lament of Innocence",
@@ -37,6 +41,13 @@ GAMES = [
          story="ラルフがドラキュラを倒してから3年。伯爵が遺した呪いは今も大地を蝕んでいた。"
                "かつてドラキュラに仕えた悪魔精錬士ヘクターは、人として静かに暮らしていたが、愛するロザリーを魔女として処刑に追い込んだかつての同僚アイザックへの復讐のため、"
                "捨てたはずの悪魔精錬の力を再び手にする。旅の途中では伝説のハンター、ラルフとも刃を交える。"),
+    dict(id="bc", year="1499年", title="Castlevania: Belmont's Curse", en="ベルモンド・カース",
+         platform="Nintendo Switch / PlayStation 5 / Xbox Series X|S / PC / 2026年", hero="ローズ・ベルモンド",
+         wiki_url="https://en.wikipedia.org/wiki/Castlevania:_Belmont%27s_Curse", wiki_label="Wikipedia（英語版）",
+         story="『悪魔城伝説』から23年後のパリ。魔物に襲われた街の司教が、かつてドラキュラを倒したラルフ（英語名トレバー）に助けを求める。"
+               "ラルフが伴ったのは、亡き妻サイファとの間に生まれ、ハンターとして鍛え上げた娘ローズ。彼女は母から受け継いだドラキュラの呪いを右腕に宿していた。"
+               "街を探索するうち、魔物の出現は伯爵を蘇らせる儀式の一部だと分かり、やがてパリの中心に悪魔城が姿を現す。"
+               "シリーズ40周年を飾る探索型2Dアクションで、音楽は ASADI が手がけた。"),
     dict(id="adv", year="1576年", title="ドラキュラ伝説", en="Castlevania: The Adventure",
          platform="ゲームボーイ / 1989年", hero="クリストファー・ベルモンド", wiki="ドラキュラ伝説",
          story="ラルフの戦いから100年。再び蘇ったドラキュラを討つため、ベルモンド家のクリストファーが悪魔城に挑む。"
@@ -174,7 +185,7 @@ def diagram():
         out.append(f'<line class="{cls}" x1="{x1}" y1="{y(r1)}" x2="{x2}" y2="{y(r2)}"/>')
         label((x1 + x2) / 2, (y(r1) + y(r2)) / 2, text)
 
-    rows = ["1094年", "1476年", "1479年", "1576–91年", "1691–98年", "1748年", "1792年", "1797年",
+    rows = ["1094年", "1476年", "1479–99年", "1576–91年", "1691–98年", "1748年", "1792年", "1797年",
             "19世紀", "1917年", "1944年", "1999年", "2035–36年"]
     H = y(len(rows) - 1) + 150
     for i, t in enumerate(rows):
@@ -186,7 +197,8 @@ def diagram():
 
     # 線を先に描いてからノードを重ねる
     vert("C", 0, 1, "子孫")
-    vert("C", 1, 3, "子孫")
+    vert("C", 1, 2, "父娘")
+    vert("C", 2, 3, "子孫")
     vert("C", 3, 4, "子孫")
     vert("C", 4, 5, "孫")
     vert("C", 5, 6, "子孫")
@@ -201,9 +213,9 @@ def diagram():
     horiz("L", "C", 0, "親友 → 宿敵", "e foe")
     horiz("L", "C", 1, "共闘")
     horiz("C", "R", 1, "共闘 → 結婚")
-    hx = X["C"] + 80  # ラルフの下辺からヘクターへ折れ線
-    out.append(f'<path class="e" fill="none" d="M{hx} {y(1)+NH/2} V{y(2)} H{X["R"]-NW/2}"/>')
-    label((hx + X["R"] - NW / 2) / 2 + 10, y(2), "対決 → 共闘")
+    hx, hy, hx2 = X["C"] + 105, y(1) + NH / 2 + 14, X["R"] - NW / 2 - 28  # ラルフからヘクターへの折れ線
+    out.append(f'<path class="e" fill="none" d="M{hx} {y(1)+NH/2} V{hy} H{hx2} V{y(2)} H{X["R"]-NW/2}"/>')
+    label((hx + hx2) / 2 + 10, hy, "対決 → 共闘")
     horiz("C", "R", 3, "父子")
     horiz("C", "R", 5, "親友")
     horiz("C", "R", 6, "遠縁の義妹")
@@ -218,6 +230,7 @@ def diagram():
     node("L", 1, "アルカード", "ドラキュラの息子／悪魔城伝説", "dark")
     node("C", 1, "ラルフ・C・ベルモンド", "悪魔城伝説", "bel")
     node("R", 1, "サイファ・ヴェルナンデス", "魔法使い。グラントも仲間に", "ally")
+    node("C", 2, "ローズ・ベルモンド", "ラルフとサイファの娘／Belmont's Curse", "bel")
     node("R", 2, "ヘクター", "元ドラキュラ配下／闇の呪印", "hero")
     node("C", 3, "クリストファー・ベルモンド", "ドラキュラ伝説 I・II", "bel")
     node("R", 3, "ソレイユ・ベルモンド", "操られた息子", "ally")
@@ -321,7 +334,7 @@ def game_card(g):
   <div class="links">
     <a class="btn" href="{YTM_PL}{d["playlistId"]}" target="_blank" rel="noopener">▶ プレイリストを YouTube Music で開く</a>
     {extra}
-    <a class="btn ghost" href="{wiki(g["wiki"])}" target="_blank" rel="noopener">Wikipedia</a>
+    <a class="btn ghost" href="{wiki_url(g)}" target="_blank" rel="noopener">{e(g.get("wiki_label", "Wikipedia"))}</a>
   </div>
   <details>
     <summary><span>曲一覧（{len(d["tracks"])}曲）</span> {badge}</summary>
@@ -338,7 +351,7 @@ def page():
         f'<td><a href="#{g["id"]}">{e(g["title"])}</a>{" <span class=\"badge side\">外伝</span>" if g.get("side") else ""}</td>'
         f'<td>{e(g["hero"])}</td>'
         f'<td class="c">{len(TRACKS[g["id"]]["tracks"])}</td>'
-        f'<td><a href="{wiki(g["wiki"])}" target="_blank" rel="noopener">Wikipedia</a></td></tr>'
+        f'<td><a href="{wiki_url(g)}" target="_blank" rel="noopener">{e(g.get("wiki_label", "Wikipedia"))}</a></td></tr>'
         + ('<tr class="ev"><td class="y">1999年</td><td colspan="4">ユリウス・ベルモンドらがドラキュラを完全に滅ぼす（ゲーム化されていない出来事）</td></tr>'
            if g["id"] == "por" else "")
         for g in GAMES)
