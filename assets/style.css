@@ -250,3 +250,11 @@ footer p { max-width: 52em; margin: 0 auto 8px; }
 #anime .game { border-left-color: var(--teal); }
 #anime .year { color: #8fcfc7; border-color: rgba(95, 168, 160, .5); background: rgba(95, 168, 160, .1); }
 tr.grp th { text-align: left; background: var(--panel-2); color: var(--gold); font-size: .8rem; letter-spacing: .04em; white-space: normal; }
+
+/* ---------- favorites ---------- */
+.game.fav { border-left-color: var(--gold); }
+.game.fav h3 { font-size: 1.6rem; }
+.game.fav .story { margin-top: 14px; }
+.first { font-family: var(--sans); letter-spacing: 0; color: var(--gold); }
+td.who, th.who { color: var(--muted); font-size: .84rem; max-width: 16em; }
+@media (max-width: 560px) { td.who, th.who { display: none; } }

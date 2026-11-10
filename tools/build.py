@@ -162,6 +162,20 @@ ANIME = [
          note="プレイリストはシーズン1のアルバムです。シーズン2はアルバム単位のプレイリストが見つからなかったため、曲ごとのリンクのみ掲載しています。"),
 ]
 
+# シリーズを代表する2曲の歴代バージョン集
+FAVS = [
+    dict(id="fav_bt", title="血の涙", en="Bloody Tears", first="初出：ドラキュラII 呪いの封印（1987年）",
+         story="『ドラキュラII 呪いの封印』で昼のフィールドに流れる曲として生まれ、以後ほとんどの作品でアレンジされ続けているシリーズの代名詞。"
+               "パイプオルガン風の前奏から疾走するメロディへ移る構成は、ファミコン音源から最新作のオーケストラまで形を変えて受け継がれている。"
+               "ディスクシステム版の原曲から、スーパーファミコン版、血の輪廻、蒼月の十字架、ジャッジメント、Dead Cells コラボ、最新作 Belmont's Curse までを年代順に並べた。",
+         note="ファンが年代順にまとめたプレイリストに基づく一覧です（夜の曲「Monster Dance」は除外）。最後の Belmont's Curse 版はプレイリストに無いため個別リンクで追加しています。"),
+    dict(id="fav_vk", title="Vampire Killer", en="ヴァンパイアキラー", first="初出：悪魔城ドラキュラ（1986年）",
+         story="初代『悪魔城ドラキュラ』のステージ1で流れる、シリーズ最初の一曲。聖鞭と同じ名を持ち、「血の涙」「Beginning」と並んでシリーズ三大名曲に数えられる。"
+               "悪魔城伝説の「Déjà Vu」、白夜の協奏曲の「VK2K2」のように名前を変えて登場することも多い。"
+               "ファミコン版・MSX2版の原曲から、X68000版、血の輪廻、Circle of the Moon、ジャッジメント、スマブラ、Dead Cells コラボまでを年代順に並べた。",
+         note="ファンが年代順にまとめたプレイリストに基づく一覧です。"),
+]
+
 # 時系列の外にあるクロスオーバー作品（プレイリストのみ紹介）
 BONUS = [
     ("悪魔城ドラキュラ Harmony of Despair ORIGINAL SOUNDTRACK SELECTION", "歴代主人公が集う協力アクションのサントラ", "PLGB_aEXQbubuEC8lIpV0T9S2GHPaN_bAg"),
@@ -318,7 +332,7 @@ def los_diagram():
 
 
 # ---------------------------------------------------------------- HTML
-def track_table(key):
+def track_table(key, artist=False):
     d = TRACKS[key]
     pid = d["playlistId"]
     rows = ""
@@ -326,10 +340,12 @@ def track_table(key):
         if t.get("group"):
             rows += f'<tr class="grp"><th colspan="3" scope="colgroup">{e(t["group"])}</th></tr>'
         href = YTM_W + t["videoId"] + ("" if t.get("noList") else "&amp;list=" + pid)
+        who = f'<td class="who">{e(t["artist"])}</td>' if artist else ""
         rows += (f'<tr><td class="num">{i}</td>'
-                 f'<td><a href="{href}" target="_blank" rel="noopener">{e(t["title"])}</a></td>'
+                 f'<td><a href="{href}" target="_blank" rel="noopener">{e(t["title"])}</a></td>{who}'
                  f'<td class="dur">{e(t["duration"])}</td></tr>')
-    return (f'<div class="tw"><table><thead><tr><th class="num">#</th><th>曲名（クリックで YouTube Music を開く）</th>'
+    who_h = '<th class="who">アーティスト／投稿者</th>' if artist else ""
+    return (f'<div class="tw"><table><thead><tr><th class="num">#</th><th>曲名（クリックで YouTube Music を開く）</th>{who_h}'
             f'<th class="dur">時間</th></tr></thead><tbody>{rows}</tbody></table></div>')
 
 
@@ -372,6 +388,28 @@ def game_card(g):
 </article>'''
 
 
+def fav_card(g):
+    d = TRACKS[g["id"]]
+    return f'''
+<article class="game fav" id="{g["id"]}">
+  <header>
+    <div>
+      <h3>{e(g["title"])}</h3>
+      <p class="en">{e(g["en"])}　<span class="first">{e(g["first"])}</span></p>
+    </div>
+  </header>
+  <p class="story">{e(g["story"])}</p>
+  <div class="links">
+    <a class="btn" href="{YTM_PL}{d["playlistId"]}" target="_blank" rel="noopener">▶ 歴代バージョンのプレイリストを開く</a>
+  </div>
+  <details>
+    <summary><span>バージョン一覧（{len(d["tracks"])}曲）</span> <span class="badge com">ファン作成プレイリスト</span></summary>
+    <p class="note">※ {e(g["note"])}</p>
+    {track_table(g["id"], artist=True)}
+  </details>
+</article>'''
+
+
 def page():
     total = sum(len(TRACKS[g["id"]]["tracks"]) for g in GAMES + LOS + ANIME)
     tl = "".join(
@@ -389,6 +427,7 @@ def page():
     cards = "".join(game_card(g) for g in GAMES)
     los_cards = "".join(game_card(g) for g in LOS)
     anime_cards = "".join(game_card(g) for g in ANIME)
+    fav_cards = "".join(fav_card(g) for g in FAVS)
     return f'''<!doctype html>
 <html lang="ja">
 <head>
@@ -408,6 +447,7 @@ def page():
   <p class="lead">千年にわたるベルモンド一族とドラキュラの戦いを、音楽でたどる。<br>
   {len(GAMES) + len(LOS) + len(ANIME)}作品・{total}曲を物語の時系列順にまとめました。</p>
   <nav>
+    <a href="#favorites">血の涙 / Vampire Killer</a>
     <a href="#timeline">年表</a>
     <a href="#relations">相関図</a>
     <a href="#games">作品別の楽曲</a>
@@ -418,6 +458,12 @@ def page():
 </header>
 
 <main>
+<section id="favorites">
+  <h2>二大名曲コレクション</h2>
+  <p class="sec-lead">シリーズを象徴する「血の涙（Bloody Tears）」と「Vampire Killer」。作品ごとに姿を変える歴代バージョンだけを集めました。</p>
+  {fav_cards}
+</section>
+
 <section id="timeline">
   <h2>年表</h2>
   <p class="sec-lead">作品名をクリックすると、あらすじと曲一覧へ移動します。</p>
