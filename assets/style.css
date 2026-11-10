@@ -240,3 +240,8 @@ footer p { max-width: 52em; margin: 0 auto 8px; }
   th, td { padding: 8px 10px; }
   .btn { width: 100%; text-align: center; }
 }
+
+/* ---------- Lords of Shadow ---------- */
+.los-cards { margin-top: 22px; }
+#los .game { border-left-color: var(--violet); }
+#los .year { color: #b9a3e3; border-color: rgba(142, 111, 196, .5); background: rgba(142, 111, 196, .1); }
